@@ -1,0 +1,136 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model School {
+  id        Int        @id @default(autoincrement())
+  name      String
+  funName   String
+  classes   Class[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  Business  Business[]
+}
+
+model Class {
+  id             Int          @id @default(autoincrement())
+  name           String
+  schoolId       Int
+  school         School       @relation(fields: [schoolId], references: [id])
+  users          User[]
+  classSettingId Int
+  classSetting   ClassSetting @relation(fields: [classSettingId], references: [id])
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+model ClassSetting {
+  id        Int      @id @default(autoincrement())
+  tax       Boolean
+  VAT       Boolean
+  classes   Class[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model User {
+  id          Int           @id @default(autoincrement())
+  email       String        @unique
+  password    String
+  name        String
+  role        String
+  classId     Int
+  class       Class         @relation(fields: [classId], references: [id])
+  jobTitle    JobTitle?     @relation(fields: [jobTitleId], references: [id])
+  jobTitleId  Int?
+  Transaction Transaction[]
+  Mail        Mail[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  NewsPost    NewsPost[]
+}
+
+model Business {
+  id          Int          @id @default(autoincrement())
+  title       String
+  location    String
+  description String
+  icon        String
+  opensAt     String
+  closesAt    String
+  school      School       @relation(fields: [schoolId], references: [id])
+  schoolId    Int
+  JobListing  JobListing[]
+  JobTitle    JobTitle[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model JobListing {
+  id             Int              @id @default(autoincrement())
+  title          String
+  body           String
+  business       Business         @relation(fields: [businessId], references: [id])
+  businessId     Int
+  JobApplication JobApplication[]
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+}
+
+model JobApplication {
+  id           Int        @id @default(autoincrement())
+  body         String
+  jobListing   JobListing @relation(fields: [jobListingId], references: [id])
+  jobListingId Int
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+model JobTitle {
+  id         Int      @id @default(autoincrement())
+  title      String
+  business   Business @relation(fields: [businessId], references: [id])
+  businessId Int
+  user       User[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Mail {
+  id        Int      @id @default(autoincrement())
+  title     String
+  body      String
+  from      String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Transaction {
+  id        Int      @id @default(autoincrement())
+  title     String
+  amount    Int
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model NewsPost {
+  id        Int      @id @default(autoincrement())
+  title     String
+  body      String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

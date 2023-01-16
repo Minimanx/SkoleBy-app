@@ -44,9 +44,10 @@ router.post(
   checkSchema(postJobListingSchema),
   validationMiddleware,
   async (req: Request, res: Response) => {
+    const userId = Number(res.locals.userId)
     const jobListing = req.body
 
-    const result = await createJobListing(jobListing)
+    const result = await createJobListing(jobListing, userId)
     if (typeof result === 'string')
       return res.status(400).send({ message: result })
     res.send(result)

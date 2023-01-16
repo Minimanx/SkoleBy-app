@@ -32,7 +32,22 @@ export const getJobListingById = async (id: number, userId: number) => {
   return jobListing
 }
 
-export const createJobListing = async (jobListing: JobListing) => {
+export const createJobListing = async (
+  jobListing: JobListing,
+  userId: number
+) => {
+  const user = await prisma.user.findFirst({
+    where: { id: userId },
+    include: { class: { include: { school: true } } },
+  })
+  if (!user || user.role === 'student') return 'Unauthorized'
+
+  const business = await prisma.business.findFirst({
+    where: { id: jobListing.businessId },
+  })
+  if (!business || business.schoolId !== user.class.schoolId)
+    return 'Unauthorized'
+
   return await prisma.jobListing.create({ data: jobListing })
 }
 

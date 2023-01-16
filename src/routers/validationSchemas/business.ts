@@ -9,8 +9,20 @@ export const postBusinessSchema: Schema = {
     in: 'body',
     isString: true,
   },
-  userId: {
+  description: {
     in: 'body',
-    isInt: true,
+    isString: true,
+  },
+  icon: {
+    in: 'body',
+    isString: true,
+  },
+  opensAt: {
+    in: 'body',
+    isString: true,
+  },
+  closesAt: {
+    in: 'body',
+    isString: true,
   },
 }

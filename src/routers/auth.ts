@@ -7,6 +7,7 @@ const router = Router()
 
 type Token = {
   id: number
+  role: string
 }
 
 const refreshCookieOptions: CookieOptions = {
@@ -34,8 +35,9 @@ router.post('/login', async (req, res) => {
   if (typeof result === 'string')
     return res.status(400).json({ message: result })
 
-  const tokenData = {
+  const tokenData: Token = {
     id: result.id,
+    role: result.role,
   }
 
   const accessToken = jsonwebtoken.sign(
@@ -64,8 +66,9 @@ router.get('/refresh', async (req, res) => {
   try {
     const decoded = jsonwebtoken.verify(refreshToken, APP_SECRET) as Token
 
-    const tokenData = {
+    const tokenData: Token = {
       id: decoded.id,
+      role: decoded.role,
     }
 
     const accessToken = jsonwebtoken.sign(

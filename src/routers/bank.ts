@@ -24,9 +24,10 @@ router.post(
   checkSchema(postTransactionSchema),
   validationMiddleware,
   async (req: Request, res: Response) => {
+    const userId = Number(res.locals.userId)
     const transaction = req.body
 
-    const result = await createTransaction(transaction)
+    const result = await createTransaction(transaction, userId)
     if (typeof result === 'string')
       return res.status(400).send({ message: result })
     res.send(result)

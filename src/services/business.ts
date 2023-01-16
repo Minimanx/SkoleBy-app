@@ -30,6 +30,14 @@ export const getBusinessById = async (id: number, userId: number) => {
   return business
 }
 
-export const createBusiness = async (business: Business) => {
-  return await prisma.business.create({ data: business })
+export const createBusiness = async (business: Business, userId: number) => {
+  const user = await prisma.user.findFirst({
+    where: { id: userId },
+    include: { class: { include: { school: true } } },
+  })
+  if (!user || user.role === 'student') return 'Unauthorized'
+
+  return await prisma.business.create({
+    data: { ...business, schoolId: user.class.schoolId },
+  })
 }
